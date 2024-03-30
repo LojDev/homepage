@@ -1,4 +1,4 @@
-import {status, statusBedrock} from "minecraft-server-util-dist";
+import { pingJava, pingBedrock } from '@minescope/mineping';
 
 import createLogger from "utils/logger";
 import getServiceWidget from "utils/config/service-helpers";
@@ -15,12 +15,12 @@ export default async function minecraftProxyHandler(req, res) {
   try {
     let svrResponse;
     if (edition.toLowerCase() === "java") {
-      svrResponse = await status(url.hostname, Number(url.port));
+      svrResponse = await pingJava(url.hostname, Number(url.port));
     } else if (edition.toLowerCase() === "bedrock") {
-      svrResponse = await statusBedrock(url.hostname, Number(url.port));
+      svrResponse = await pingBedrock(url.hostname, Number(url.port));
     }
     res.status(200).send({
-      version: svrResponse.version.name,
+      version: svrResponse.version.name || svrResponse.version.gameVersion,
       online: true,
       players: svrResponse.players,
     });
